@@ -1,2 +1,6 @@
-*.html
-*.css
+# Ignore everything
+*
+# Except .js .gitignore and readme.md
+!*.js
+!.gitignore
+!readme.md
