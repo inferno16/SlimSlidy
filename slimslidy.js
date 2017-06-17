@@ -1,6 +1,7 @@
 var elements;
 var sliders = [];
 var md = 0;
+var evt;
 
 function Track() {
 	this.elem = Object();
@@ -27,14 +28,22 @@ function RangeSlider() {
 	};
 }
 
-window.onload = function(){
+window.addEventListener("mousemove", function(e){
+	evt = window.event || e;
+});
+
+window.addEventListener("load", function(){
 	elements = document.getElementsByClassName("range_slider");
 	if(elements.length > 0) {
 		constructSliders();
+		if(sliders.length > 0) {
+			addEventListeners();
+		}
 	}
 	document.body.onmouseup = function(){md = 0;};
 	document.body.onmou = function(){md = 0;};
-}
+});
+
 function constructSliders() 
 {
 	for (var i = 0; i < elements.length; i++) {
@@ -76,23 +85,16 @@ function initTracks(elem)
 			slider.step = step;
 		applyStyle(slider);
 		sliders.push(slider);
-		elements[0].addEventListener("mousedown", function(){
-			md = 1;
-			changeValue(this, sliders.length-1, 0);
-			document.body.onmousemove = function(){
-				if(md)
-					changeValue(elements[0], sliders.length-1, 0);
-			};
-		});
 	}
 }
 
 function applyStyle(slider) {
 	var element = slider.self;
+	element.style.cursor = 'pointer';
 	if(element.style.height === '')
-		element.style.height = "10px";
+		element.style.height = "5px";
 	if(element.style.background === '')
-		element.style.background = "#9d9d9d";
+		element.style.background = "#555555";
 	var main = slider.tracks[0].elem;
 	if(main.style.background === '')
 		main.style.background = "#ff0000";
@@ -102,9 +104,11 @@ function applyStyle(slider) {
 	if(slider.tracks.length > 1) {
 		var second = slider.tracks[1].elem;
 		if(second.style.background === '')
-			second.style.background = "#555555";
+			second.style.background = "#9d9d9d";
 		if(second.style.height === '')
 			second.style.height = "100%";
+		if(second.style.width === '')
+			second.style.height = "0";
 	}
 }
 
@@ -112,15 +116,30 @@ function updateProgress(track, percentage) {
 	track.elem.style.width = percentage+"%";
 }
 
-function changeValue(slider, sliderNum, trackNum) 
+function changeValue(slider, trackNum) 
 {
-	var mouseX = event.clientX;
-	var elemRect = slider.getBoundingClientRect();
+	var mouseX = evt.clientX;
+	var elemRect = slider.self.getBoundingClientRect();
 	var width = elemRect.right - elemRect.left;
 	var relClick = mouseX - elemRect.left;
 	var percentage = relClick / width * 100;
-	var sliderRange = sliders[sliderNum].max - sliders[sliderNum].min;
+	var sliderRange = slider.max - slider.min;
 	var offset = percentage * sliderRange / 100;
-	var value = sliders[sliderNum].min + offset; //no need for checks setCurrent does it for us
-	sliders[sliderNum].setCurrent(trackNum, value, percentage);
+	var value = slider.min + offset; //no need for checks setCurrent does it for us
+	slider.setCurrent(trackNum, value, percentage);
+}
+
+function addEventListeners()
+{
+	// using let since the var's scope was causing problems
+	for (let i = 0; i < sliders.length; i++) {
+		sliders[i].self.addEventListener("mousedown", function(){
+			md = 1;
+			changeValue(sliders[i], 0);
+			document.body.onmousemove = function(){
+				if(md)
+					changeValue(sliders[i], 0);
+			};
+		});
+	}
 }
