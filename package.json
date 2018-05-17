@@ -1,6 +1,6 @@
 {
     "private" : true,
-    "name": "SlimSlidy",
+    "name": "slim-slidy",
     "version": "0.0.1",
     "main": "slimslidy.js",
     "author": "Ivan Angelov",
