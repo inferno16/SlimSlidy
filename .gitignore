@@ -1,6 +1,7 @@
 # Ignore everything
 *
-# Except .js .gitignore and readme.md
+# Except .js files , package.json, .gitignore and readme.md
 !*.js
+!package.json
 !.gitignore
 !readme.md

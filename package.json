@@ -1,0 +1,9 @@
+{
+    "private" : true,
+    "author": "Ivan Angelov",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/inferno16/SlimSlidy.git"
+    },
+    "dependencies": {}
+}
